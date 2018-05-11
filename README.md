@@ -115,7 +115,4 @@ A: Be my guest, but if care about security *at all* you will have to restrict
      sudo setcap cap_net_raw+ep  /usr/local/sbin/arping
    This requires a libnet 1.1.5 or higher, which does not explicitly check for
    uid 0.
-
-   For older versions of Libnet:
-     http://github.com/ThomasHabets/libnet/commit/aaa383b5c816107082508b7646929a9479b81645
 ---
