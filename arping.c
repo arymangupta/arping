@@ -560,6 +560,7 @@ extended_usage()
 	       "           pinging MACs.\n"
 	       "    -U     Send unsolicited ARP.\n"
 	       "    -v     Verbose output. Use twice for more messages.\n"
+	       "    -V 	   num 802.1Q tag to add. Defaults to no VLAN tag.\n"
                "    -w sec Specify a timeout before ping exits regardless of how"
                " many\npackets have been sent or received.\n"
                "    -W sec Time to wait between pings.\n");
@@ -964,7 +965,8 @@ pingip_recv(const char *unused, struct pcap_pkthdr *h, uint8_t *packet)
 		veth = (void*)(packet+shiftEther);
 		harp = (void*)((char*)veth + LIBNET_802_1Q_H);
 		pkt_srcmac = veth->vlan_shost;
-	} else {
+	} 
+	else {
                 // Short packet.
                 if (h->caplen < LIBNET_ETH_H + LIBNET_ARP_H + 2*(ETH_ALEN + 4)) {
                         return;
@@ -1108,7 +1110,7 @@ pingmac_recv(const char *unused, struct pcap_pkthdr *h, uint8_t *packet)
 	struct libnet_icmpv4_hdr *hicmp;
         struct timespec arrival;
 
-	int shiftEther = 26; // ttp header shift 22 and 4 bytes of pfe replaced 14 bytes header 
+	int shiftEther = 22; // ttp header shift 22 and 4 bytes of pfe replaced 14 bytes header 
 	if(verbose>2) {
 		printf("arping: received response for mac ping\n");
 	}
@@ -1486,6 +1488,11 @@ arping_main(int argc, char **argv)
 			mode = PINGIP;
 			break;
 		}
+		case 'T': /* set destination IP */
+                        opt_T = 1;
+                        dstip_opt = optarg;
+			mode = PINGMAC;
+			break;
 		case 'u':
 			alsototal = 1;
 			break;
@@ -1733,7 +1740,7 @@ arping_main(int argc, char **argv)
 	/*
 	 * pcap init
 	 */
-        if (!(pcap = do_pcap_open_live(ifname, 100, promisc, 10, ebuf))) {
+        if (!(pcap = do_pcap_open_live(ifname, 100, promisc, 1000, ebuf))) { //DEBUG 10 to 1000
                 strip_newline(ebuf);
                 fprintf(stderr, "arping: pcap_open_live(): %s\n", ebuf);
 		exit(1);

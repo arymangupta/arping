@@ -13,7 +13,7 @@ BINOWN= root
 BINMODE=4555
 
 
-NO_SHARED = yes
+#NO_SHARED = yes
 .PATH: ${RELSRCTOP}/dist/packetfactory-libnet/src
 
 SRCS +=		\
@@ -31,7 +31,7 @@ SRCS +=		\
 		libnet_build_ip.c \
 		libnet_raw.c 
 							
-CFLAGS +=  -I${.CURDIR}/include -I${.CURDIR}
+CFLAGS +=  -I${.CURDIR}/include -I${.CURDIR} -O
 DPLIBS =\
 	${LIBPCAP} \
 	${LIBJXMLUTIL} \
@@ -45,5 +45,6 @@ DPLIBS =\
         ${LIBJUNOS-LOG-TRACE} \
         ${LIBJUNOS-SYS-UTIL} \
         ${LIBM} \
-        ${LIBJUNOS-UTIL}
+        ${LIBJUNOS-UTIL} \
+	${LIBIFINFO}
 .include <bsd.prog.mk>
